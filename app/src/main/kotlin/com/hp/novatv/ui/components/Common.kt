@@ -32,6 +32,7 @@ import com.hp.novatv.ui.components.Surface
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
 import com.hp.novatv.core.theme.LocalBaseSp
+import com.hp.novatv.core.theme.outline
 import com.hp.novatv.core.theme.NovaOnSurfaceVariant
 import com.hp.novatv.core.theme.NovaSurfaceVariant
 

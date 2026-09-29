@@ -45,6 +45,7 @@ import com.hp.novatv.R
 import com.hp.novatv.ui.PlayerActivity
 import com.hp.novatv.core.model.Channel
 import com.hp.novatv.core.theme.LocalBaseSp
+import com.hp.novatv.core.theme.outline
 import com.hp.novatv.core.theme.NovaOnSurfaceVariant
 import com.hp.novatv.core.util.programElapsed
 import com.hp.novatv.core.util.startOfDay

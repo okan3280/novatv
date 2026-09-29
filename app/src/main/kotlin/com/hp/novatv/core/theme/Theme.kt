@@ -4,6 +4,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -42,7 +43,7 @@ fun NovaTvTheme(
             onSurface = androidx.compose.ui.graphics.Color(0xFF101014),
             surfaceVariant = androidx.compose.ui.graphics.Color(0xFFE8E8EF),
             onSurfaceVariant = androidx.compose.ui.graphics.Color(0xFF4A4A57),
-            outline = androidx.compose.ui.graphics.Color(0xFFC4C4CF),
+            border = Color(0xFFC4C4CF),
         )
     } else {
         darkColorScheme(
@@ -57,7 +58,7 @@ fun NovaTvTheme(
             onSurface = NovaOnSurface,
             surfaceVariant = NovaSurfaceVariant,
             onSurfaceVariant = NovaOnSurfaceVariant,
-            outline = NovaOutline,
+            border = NovaOutline,
         )
     }
 

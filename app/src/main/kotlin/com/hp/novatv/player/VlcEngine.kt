@@ -7,7 +7,6 @@ import android.view.SurfaceView
 import org.videolan.libvlc.LibVLC
 import org.videolan.libvlc.Media
 import org.videolan.libvlc.MediaPlayer
-import org.videolan.libvlc.interfaces.IVLCVout
 
 /**
  * libVLC yedek motoru. ExoPlayer'in cozemedigi formatlar icin:
@@ -32,7 +31,13 @@ class VlcEngine(
     val isPlaying: Boolean get() = mediaPlayer?.isPlaying == true
     val isAvailable: Boolean get() = libVlc != null
 
-    /** Video cikis arabirimi. */
+    /**
+     * Video cikis arabirimi.
+     *
+     * MediaPlayer.vout alani Kotlin tarafindan gorunur degil
+     * (yalnizca IVLCVout donduren bir alan). Bu yuzden yuzeye
+     * baglamak icin setVideoSurface yerine AWindow API'si kullanilir.
+     */
     private val vout: IVLCVout? get() = mediaPlayer?.vout
 
     fun initialize(): Boolean {
@@ -56,30 +61,39 @@ class VlcEngine(
             )
     }
 
+    /**
+     * Video yuzeyini baglar.
+     *
+     * MediaPlayer, AWindow API'sini miras alir:
+     *   setSurface(int id, Surface, SurfaceHolder)
+     * ID_VIDEO = 0, ID_SUBTITLES = 1 (IVLCVout sabitleri).
+     * IVLCVout yolu da var, ancak MediaPlayer.vout alani Kotlin
+     * tarafindan cozumlenemiyor.
+     */
+    private fun bindSurface(holder: SurfaceHolder?) {
+        val player = mediaPlayer ?: return
+        runCatching { player.setSurface(0, holder?.surface, holder) }
+            .onFailure { Log.w(TAG, "yuzey baglanamadi", it) }
+    }
+
     fun attach(view: SurfaceView) {
         surfaceView = view
         view.holder.addCallback(object : SurfaceHolder.Callback {
-            override fun surfaceCreated(holder: SurfaceHolder) = bind(holder)
+            override fun surfaceCreated(holder: SurfaceHolder) = bindSurface(holder)
 
             override fun surfaceChanged(
                 holder: SurfaceHolder,
                 format: Int,
                 width: Int,
                 height: Int,
-            ) = bind(holder)
+            ) = bindSurface(holder)
 
-            override fun surfaceDestroyed(holder: SurfaceHolder) {
-                runCatching { vout?.setVideoSurface(null, null) }
-            }
+            override fun surfaceDestroyed(holder: SurfaceHolder) = bindSurface(null)
         })
     }
 
-    private fun bind(holder: SurfaceHolder) {
-        runCatching { vout?.setVideoSurface(holder.surface, holder) }
-    }
-
     fun detach() {
-        runCatching { vout?.setVideoSurface(null, null) }
+        bindSurface(null)
         surfaceView = null
     }
 
@@ -111,9 +125,7 @@ class VlcEngine(
             player.setAspectRatio(null)
         }.onFailure { Log.e(TAG, "VLC ayarlanamadi", it) }
 
-        surfaceView?.holder?.let { holder ->
-            runCatching { player.vout?.setVideoSurface(holder.surface, holder) }
-        }
+        surfaceView?.holder?.let { bindSurface(it) }
 
         runCatching { player.play() }
             .onFailure { Log.e(TAG, "VLC oynatma baslamadi", it); return false }

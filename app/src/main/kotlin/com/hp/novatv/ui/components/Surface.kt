@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ClickableSurfaceDefaults
-import com.hp.novatv.ui.components.SurfaceDefaults
+import androidx.tv.material3.SurfaceDefaults
 
 /**
  * tv-material uyumlu Surface sarmalayicisi.
@@ -16,7 +16,7 @@ import com.hp.novatv.ui.components.SurfaceDefaults
  * androidx.tv.material3.Surface `color: Color` degil
  * `colors: SurfaceColors` kabul eder ve tiklanabilir varyantinda
  * `shape: ClickableSurfaceShape` ister. Bu sarmalayici Material3
- * aliskanligindaki `Surface(color = ...)` yazimini destekler, boylece
+ * aliskanligindaki `Surface(color = ...)` yazimini destekler; boylece
  * cagri kodlari degismez.
  */
 @Composable

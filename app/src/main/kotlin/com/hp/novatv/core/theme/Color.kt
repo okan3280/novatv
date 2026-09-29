@@ -1,18 +1,28 @@
 package com.hp.novatv.core.theme
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hp.novatv.ui.components.Surface
+import androidx.tv.material3.ColorScheme
+import androidx.tv.material3.SurfaceDefaults
 import androidx.tv.material3.Text
+
+// ColorScheme.outline uzantisi ayni paket icinde
 import com.hp.novatv.data.prefs.AccentColor
+
+/**
+ * androidx.tv.material3.ColorScheme'de 'outline' alani YOK; 'border' var.
+ * Material3 aliskanligini korumak icin uzantili erisim.
+ */
+val ColorScheme.outline: Color get() = border
 
 // NovaTV marka renkleri
 val NovaBackground = Color(0xFF0B0B0F)
@@ -76,19 +86,22 @@ fun AccentSwatch(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
+    androidx.tv.material3.Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(8.dp),
-        color = Color(accent.hex),
-        border = if (selected) BorderStroke(3.dp, Color.White) else null,
+        shape = androidx.tv.material3.ClickableSurfaceDefaults.shape(
+            RoundedCornerShape(8.dp),
+        ),
+        colors = androidx.tv.material3.ClickableSurfaceDefaults.colors(
+            containerColor = Color(accent.hex),
+        ),
         modifier = modifier.size(52.dp),
     ) {
         Box(contentAlignment = Alignment.Center) {
             if (selected) {
                 Text(
-                    text = "v",
+                    text = "OK",
                     color = Color.White,
-                    fontSize = 22.sp,
+                    fontSize = 18.sp,
                 )
             }
         }

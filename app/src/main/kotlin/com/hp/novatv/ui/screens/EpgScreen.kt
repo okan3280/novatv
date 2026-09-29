@@ -65,7 +65,7 @@ import java.util.Calendar
  * genislikte dizilir.
  */
 @Composable
-fun EpgRoute(
+internal fun EpgRoute(
     playlistId: Long,
     onBack: () -> Unit,
     onOpenProgram: (Long, Long) -> Unit,

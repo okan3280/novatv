@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -189,6 +190,4 @@ private fun rememberCoroutineScopeCompat() =
 
 /** D-pad ile odaklanabilir daire buton. */
 private fun Modifier.focusableCircle(onClick: () -> Unit): Modifier =
-    this.then(
-        androidx.compose.foundation.clickable(onClick = onClick),
-    )
+    this.clickable(onClick = onClick)
