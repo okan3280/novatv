@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -53,7 +52,8 @@ fun TvTextField(
     singleLine: Boolean = true,
     focusRequester: FocusRequester? = null,
     imeAction: ImeAction = ImeAction.Next,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    /** IME butonu basilca calisir. */
+    onImeAction: () -> Unit = {},
 ) {
     val base = LocalBaseSp.current
 
@@ -138,17 +138,7 @@ fun TvTextField(
                     imeAction = imeAction,
                 ),
                 // Compose 1.12: keyboardActions -> onKeyboardAction
-                // KeyboardActions uyeleri nullable (KeyboardActionScope.() -> Unit)?
-                onKeyboardAction = { actionScope ->
-                    when (imeAction) {
-                        ImeAction.Done -> keyboardActions.onDone?.invoke(actionScope)
-                        ImeAction.Next -> keyboardActions.onNext?.invoke(actionScope)
-                        ImeAction.Search -> keyboardActions.onSearch?.invoke(actionScope)
-                        ImeAction.Go -> keyboardActions.onGo?.invoke(actionScope)
-                        ImeAction.Send -> keyboardActions.onSend?.invoke(actionScope)
-                        else -> Unit
-                    }
-                },
+                onKeyboardAction = { onImeAction() },
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 modifier = Modifier.fillMaxWidth(),
             )
