@@ -21,9 +21,10 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
-        // TCL 65Q6C arm64. Tek ABI = kucuk APK.
         ndk {
-            abiFilters += listOf("arm64-v8a")
+            // TCL 65Q6C arm64 olabilir ama 32-bit cihazlarda da calismali.
+            // Tek ABI ile paketlenince "uyumlu degil" hatasi veriyor.
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
         }
     }
 
