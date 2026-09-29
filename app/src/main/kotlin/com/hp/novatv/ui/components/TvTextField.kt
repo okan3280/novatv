@@ -21,7 +21,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -139,14 +138,14 @@ fun TvTextField(
                     imeAction = imeAction,
                 ),
                 // Compose 1.12: keyboardActions -> onKeyboardAction
-                // KeyboardActions metotlari artik () -> Unit aliyor.
+                // KeyboardActions uyeleri nullable (KeyboardActionScope.() -> Unit)?
                 onKeyboardAction = {
                     when (imeAction) {
-                        ImeAction.Done -> keyboardActions.onDone()
-                        ImeAction.Next -> keyboardActions.onNext()
-                        ImeAction.Search -> keyboardActions.onSearch()
-                        ImeAction.Go -> keyboardActions.onGo()
-                        ImeAction.Send -> keyboardActions.onSend()
+                        ImeAction.Done -> keyboardActions.onDone?.invoke(this)
+                        ImeAction.Next -> keyboardActions.onNext?.invoke(this)
+                        ImeAction.Search -> keyboardActions.onSearch?.invoke(this)
+                        ImeAction.Go -> keyboardActions.onGo?.invoke(this)
+                        ImeAction.Send -> keyboardActions.onSend?.invoke(this)
                         else -> Unit
                     }
                 },
