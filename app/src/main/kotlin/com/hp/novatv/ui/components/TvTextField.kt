@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.PasswordInputTransformation
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
@@ -121,8 +120,12 @@ fun TvTextField(
                     TextFieldLineLimits.Default
                 },
                 // Compose 1.12: visualTransformation -> inputTransformation
+                // PasswordInputTransformation 'internal' oldugu icin
+                // maskeleme kendimiz yapiyoruz.
                 inputTransformation = if (isPassword) {
-                    PasswordInputTransformation()
+                    { text -> androidx.compose.ui.text.AnnotatedString(
+                        "•".repeat(text.length),
+                    ) }
                 } else {
                     null
                 },
@@ -135,11 +138,19 @@ fun TvTextField(
                     imeAction = imeAction,
                 ),
                 // Compose 1.12: keyboardActions -> onKeyboardAction
-                onKeyboardAction = { action ->
-                    if (action == imeAction) {
-                        keyboardActions.onDone(imeAction)
-                    } else {
-                        keyboardActions.onNext(imeAction)
+                onKeyboardAction = { scope ->
+                    when (imeAction) {
+                        androidx.compose.ui.text.input.ImeAction.Done ->
+                            keyboardActions.onDone(scope)
+                        androidx.compose.ui.text.input.ImeAction.Next ->
+                            keyboardActions.onNext(scope)
+                        androidx.compose.ui.text.input.ImeAction.Search ->
+                            keyboardActions.onSearch(scope)
+                        androidx.compose.ui.text.input.ImeAction.Go ->
+                            keyboardActions.onGo(scope)
+                        androidx.compose.ui.text.input.ImeAction.Send ->
+                            keyboardActions.onSend(scope)
+                        else -> keyboardActions.onDefault(scope)
                     }
                 },
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
