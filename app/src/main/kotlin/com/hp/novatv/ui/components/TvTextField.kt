@@ -139,13 +139,13 @@ fun TvTextField(
                 ),
                 // Compose 1.12: keyboardActions -> onKeyboardAction
                 // KeyboardActions uyeleri nullable (KeyboardActionScope.() -> Unit)?
-                onKeyboardAction = {
+                onKeyboardAction = { actionScope ->
                     when (imeAction) {
-                        ImeAction.Done -> keyboardActions.onDone?.invoke(this)
-                        ImeAction.Next -> keyboardActions.onNext?.invoke(this)
-                        ImeAction.Search -> keyboardActions.onSearch?.invoke(this)
-                        ImeAction.Go -> keyboardActions.onGo?.invoke(this)
-                        ImeAction.Send -> keyboardActions.onSend?.invoke(this)
+                        ImeAction.Done -> keyboardActions.onDone?.invoke(actionScope)
+                        ImeAction.Next -> keyboardActions.onNext?.invoke(actionScope)
+                        ImeAction.Search -> keyboardActions.onSearch?.invoke(actionScope)
+                        ImeAction.Go -> keyboardActions.onGo?.invoke(actionScope)
+                        ImeAction.Send -> keyboardActions.onSend?.invoke(actionScope)
                         else -> Unit
                     }
                 },
