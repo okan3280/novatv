@@ -10,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.PasswordInputTransformation
+import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.Composable
@@ -21,8 +23,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.MaterialTheme
@@ -110,15 +110,21 @@ fun TvTextField(
 
             BasicTextField(
                 state = state,
-                singleLine = singleLine,
                 textStyle = androidx.compose.ui.text.TextStyle(
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = (base * 0.58f).sp,
                 ),
-                visualTransformation = if (isPassword) {
-                    PasswordVisualTransformation()
+                // Compose 1.12: singleLine -> lineLimits
+                lineLimits = if (singleLine) {
+                    TextFieldLineLimits.SingleLine
                 } else {
-                    VisualTransformation.None
+                    TextFieldLineLimits.Default
+                },
+                // Compose 1.12: visualTransformation -> inputTransformation
+                inputTransformation = if (isPassword) {
+                    PasswordInputTransformation()
+                } else {
+                    null
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = if (isPassword) {
@@ -128,7 +134,14 @@ fun TvTextField(
                     },
                     imeAction = imeAction,
                 ),
-                keyboardActions = keyboardActions,
+                // Compose 1.12: keyboardActions -> onKeyboardAction
+                onKeyboardAction = { action ->
+                    if (action == imeAction) {
+                        keyboardActions.onDone(imeAction)
+                    } else {
+                        keyboardActions.onNext(imeAction)
+                    }
+                },
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 modifier = Modifier.fillMaxWidth(),
             )
