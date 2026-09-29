@@ -92,6 +92,7 @@ interface ChannelDao {
         """
         SELECT * FROM channels
         WHERE isHidden = 0
+          AND name LIKE '%' || :query || '%'
         ORDER BY name COLLATE NOCASE ASC
         LIMIT :limit
         """

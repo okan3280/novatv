@@ -87,7 +87,7 @@ class ChannelRepository(
     fun observeTotalChannelCount(): Flow<Int> = channels.observeTotalCount()
 
     fun searchChannels(query: String): Flow<List<Channel>> =
-        channels.searchByName("%${query.trim()}%").map { list -> list.map { it.toModel() } }
+        channels.searchByName(query.trim()).map { list -> list.map { it.toModel() } }
 
     // ---------------------------------------------------------------
     // EPG
@@ -110,7 +110,7 @@ class ChannelRepository(
             .map { it?.toModel() }
 
     fun searchPrograms(query: String): Flow<List<Program>> =
-        programDao.searchPrograms("%${query.trim()}%").map { list -> list.map { it.toModel() } }
+        programDao.searchPrograms(query.trim()).map { list -> list.map { it.toModel() } }
 
     val programCount: Flow<Int> = programDao.observeCount()
 
