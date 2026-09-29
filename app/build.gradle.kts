@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+import java.util.Base64
+
 android {
     namespace = "com.hp.novatv"
 
@@ -23,9 +25,11 @@ android {
         ndk {
             abiFilters += listOf("arm64-v8a")
         }
+    }
 
-        // Resource shrinking R8'in bir parcasidir (AGP 9'da ayri bayrak kaldirildi).
-        resourceConfigurations += listOf("tr", "en")
+    androidResources {
+        // AGP 9: resourceConfigurations kaldirildi -> localeFilters
+        localeFilters += listOf("tr", "en")
     }
 
     signingConfigs {
@@ -34,7 +38,8 @@ android {
         if (!keystoreB64.isNullOrBlank()) {
             val tmp = layout.buildDirectory.file("keystore/release.jks").get().asFile
             tmp.parentFile.mkdirs()
-            tmp.writeBytes(java.util.Base64.getDecoder().decode(keystoreB64))
+            // Kotlin DSL script'inde java.util.* otomatik import edilmez.
+            tmp.writeBytes(Base64.getDecoder().decode(keystoreB64))
             create("release") {
                 storeFile = tmp
                 storePassword = providers.environmentVariable("STORE_PASSWORD").orNull
