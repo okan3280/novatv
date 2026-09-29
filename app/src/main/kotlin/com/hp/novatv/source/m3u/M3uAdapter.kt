@@ -1,4 +1,4 @@
-﻿package com.hp.novatv.source.m3u
+package com.hp.novatv.source.m3u
 
 import com.hp.novatv.core.model.Channel
 import com.hp.novatv.core.model.Playlist
@@ -14,12 +14,16 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
-import java.util.Calendar
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.TimeZone
 
 /**
- * M3U adaptoru. Oynatma URL'si dogrudan dosyadan gelir; catch-up
- * catchup-source sablonu ile uretilir.
+ * M3U adaptoru.
+ *
+ * Oynatma URL'si dogrudan listeden gelir. Catch-up, `catchup-source`
+ * sablonundaki {start} / {duration} yer tutuculari ile uretilir.
  */
 class M3uAdapter(
     override val playlist: Playlist,
@@ -27,33 +31,39 @@ class M3uAdapter(
 ) : SourceAdapter {
 
     override suspend fun loadChannels(): List<Channel> = withContext(Dispatchers.IO) {
-        val body = fetchText(playlist.url) ?: throw SourceException.Network("M3U indirilemedi")
+        val body = fetchText(playlist.url)
+            ?: throw SourceException.Network("M3U indirilemedi")
+
         val channels = M3uParser().parseToList(body, playlist.url)
-        if (channels.isEmpty()) throw SourceException.Parse("M3U iÃ§inde kanal bulunamadÄ±")
+        if (channels.isEmpty()) {
+            throw SourceException.Parse("M3U icinde kanal bulunamadi")
+        }
         channels
     }
 
     override suspend fun loadPrograms(channels: List<Channel>): Flow<List<Program>> = flow {
-        val epgUrl = playlist.epgUrl.ifBlank { null }
-        if (epgUrl == null) return@flow
+        val epgUrl = playlist.epgUrl
+        if (epgUrl.isBlank()) return@flow
 
         val parser = XmltvParser()
-        // tvgId -> kanal eslemesi
-        val byTvg = channels.filter { it.tvgId.isNotEmpty() }
-            .associateBy { it.tvgId }
-
+        val byTvg = channels.filter { it.tvgId.isNotEmpty() }.associateBy { it.tvgId }
         val collected = mutableListOf<Program>()
-        client.newCall(Request.Builder().url(epgUrl).build()).execute().use { response ->
-            if (!response.isSuccessful) throw SourceException.Network("EPG indirilemedi: ${response.code}")
+
+        val request = Request.Builder().url(epgUrl).build()
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                throw SourceException.Network("EPG indirilemedi: ${response.code}")
+            }
             val stream = response.body?.byteStream()
-                ?: throw SourceException.Network("EPG gÃ¶vdesi boÅŸ")
+                ?: throw SourceException.Network("EPG govdesi bos")
+
             parser.parse(stream) { tvgId, programs ->
                 val channel = byTvg[tvgId] ?: return@parse
-                collected += programs.map { it.copy(channelId = channel.id) }
+                collected += programs.map { it.copy(channelId = channel.id, tvgId = tvgId) }
             }
         }
 
-        val from = startOfDay() - (playlistCatchupWindow() * 86_400_000L)
+        val from = startOfDay() - CATCHUP_WINDOW_DAYS * 86_400_000L
         emit(collected.filter { it.endEpoch >= from })
     }.flowOn(Dispatchers.IO)
 
@@ -67,29 +77,16 @@ class M3uAdapter(
         val source = channel.catchupSource
         if (source.isBlank()) return channel.streamUrl
 
-        val durationSec = (durationMs / 1000L).toInt()
-        return when {
-            // {start} / {duration} yer tutuculari
-            source.contains("{start}") || source.contains("{utc}") ||
-                source.contains("{timestamp}") -> {
-                val ts = if (source.contains("{utc}")) {
-                    SimpleUtc(startEpoch)
-                } else {
-                    SimpleLocal(startEpoch)
-                }
-                source
-                    .replace("{start}", ts.value)
-                    .replace("{utc}", ts.value)
-                    .replace("{timestamp}", (startEpoch).toString())
-                    .replace("{duration}", durationSec.toString())
-                    .replace("{end}", (startEpoch + durationMs / 1000L).toString())
-            }
+        val durationSec = (durationMs / 1000L)
+        val startLocal = formatStamp(startEpoch, utc = false)
+        val startUtc = formatStamp(startEpoch, utc = true)
 
-            // Ekleme (append) sekli
-            source.isBlank() -> channel.streamUrl
-
-            else -> source
-        }
+        return source
+            .replace("{start}", startLocal)
+            .replace("{utc}", startUtc)
+            .replace("{timestamp}", startEpoch.toString())
+            .replace("{duration}", durationSec.toString())
+            .replace("{end}", (startEpoch + durationSec).toString())
     }
 
     override suspend fun providerRecord(
@@ -99,32 +96,30 @@ class M3uAdapter(
     ): Boolean = false
 
     override suspend fun resolveTimeshiftUrl(channel: Channel, positionMs: Long): String? {
-        val ts = channel.timeshiftUrl.ifBlank { return null }
-        // TiviMate uyumu: {duration} ms cinsinden geriye gitme
-        return ts.replace("{duration}", positionMs.toString())
+        val template = channel.timeshiftUrl
+        if (template.isBlank()) return null
+        return template
+            .replace("{duration}", positionMs.toString())
             .replace("{start}", startOfDay().toString())
     }
 
-    private fun playlistCatchupWindow(): Int = 7
+    private fun formatStamp(epochSeconds: Long, utc: Boolean): String =
+        SimpleDateFormat("yyyy-MM-dd:HH-mm", Locale.US).apply {
+            timeZone = if (utc) TimeZone.getTimeZone("UTC") else TimeZone.getDefault()
+        }.format(Date(epochSeconds * 1000))
 
     private fun fetchText(url: String): String? = try {
-        client.newCall(Request.Builder().url(url).build()).execute().use { r ->
-            if (!r.isSuccessful) null else r.body?.string()
+        client.newCall(Request.Builder().url(url).build()).execute().use { response ->
+            if (!response.isSuccessful) null else response.body?.string()
         }
     } catch (e: IOException) {
         null
     } catch (e: IllegalArgumentException) {
+        // Gecersiz URL
         null
     }
 
-    private class SimpleUtc(epoch: Long) {
-        val value: String = java.text.SimpleDateFormat("yyyy-MM-dd:HH-mm", Locale.US).apply {
-            timeZone = TimeZone.getTimeZone("UTC")
-        }.format(java.util.Date(epoch * 1000))
-    }
-
-    private class SimpleLocal(epoch: Long) {
-        val value: String = java.text.SimpleDateFormat("yyyy-MM-dd:HH-mm", Locale.US)
-            .format(java.util.Date(epoch * 1000))
+    private companion object {
+        const val CATCHUP_WINDOW_DAYS = 7
     }
 }

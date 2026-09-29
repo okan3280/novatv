@@ -1,4 +1,4 @@
-﻿package com.hp.novatv.source.xtream
+package com.hp.novatv.source.xtream
 
 import com.hp.novatv.core.model.Channel
 import com.hp.novatv.core.model.Playlist
@@ -51,16 +51,18 @@ class XtreamAdapter(
         val auth = authenticate()
         categories = XtreamJson.parseCategories(
             get("player_api.php?username=${enc(playlist.username)}&password=${enc(playlist.password)}&action=get_live_categories"),
-        )
+        ).associate { it.category_id to it.category_name }
 
         val body = get(
             "player_api.php?username=${enc(playlist.username)}&password=${enc(playlist.password)}&action=get_live_streams"
         )
         val streams = XtreamJson.parseStreams(body)
-        if (streams.isEmpty()) throw SourceException.Parse("Xtream'dan kanal dÃ¶nmedi")
+        if (streams.isEmpty()) {
+            throw SourceException.Parse("Xtream panelden kanal donmedi")
+        }
 
         streams.map { s ->
-            val group = categories[s.category_id] ?: "DiÄŸer"
+            val group = categories[s.category_id] ?: DEFAULT_GROUP
             Channel(
                 streamId = s.stream_id.toString(),
                 number = s.num,
@@ -94,11 +96,11 @@ class XtreamAdapter(
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) throw SourceException.Network("EPG indirilemedi: ${response.code}")
             val stream = response.body?.byteStream()
-                ?: throw SourceException.Network("EPG gÃ¶vdesi boÅŸ")
+                ?: throw SourceException.Network("EPG govdesi bos")
 
             XmltvParser().parse(stream) { tvgId, programs ->
                 val channel = byTvg[tvgId] ?: return@parse
-                collected += programs.map { it.copy(channelId = channel.id) }
+                collected += programs.map { it.copy(channelId = channel.id, tvgId = tvgId) }
             }
         }
 
@@ -188,4 +190,8 @@ class XtreamAdapter(
     }
 
     private fun enc(s: String): String = URLEncoder.encode(s, "UTF-8")
+
+    private companion object {
+        const val DEFAULT_GROUP = "Diger"
+    }
 }

@@ -1,4 +1,4 @@
-﻿package com.hp.novatv.ui.screens
+package com.hp.novatv.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,12 +30,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
+import com.hp.novatv.ui.components.Surface
 import androidx.tv.material3.Text
 import coil3.compose.AsyncImage
 import com.hp.novatv.AppContainer
 import com.hp.novatv.NovaTvApp
 import com.hp.novatv.R
+import com.hp.novatv.ui.PlayerActivity
 import com.hp.novatv.core.model.Program
 import com.hp.novatv.core.theme.LocalBaseSp
 import com.hp.novatv.core.theme.NovaLive
@@ -62,7 +63,7 @@ fun CatchupScreen(
     val context = androidx.compose.ui.platform.LocalContext.current
 
     val channel by repository.observeChannel(channelId)
-        .collectAsStateWithLifecycle(initial = null)
+        .collectAsStateWithLifecycle(initialValue = null)
 
     var dayOffset by remember { mutableIntStateOf(1) } // 1 = dun
     val dayStart = remember(dayOffset) { startOfDay() - dayOffset * 86_400_000L }
@@ -70,7 +71,7 @@ fun CatchupScreen(
 
     val programs by repository
         .observeChannelPrograms(channelId, dayStart, dayStart + 86_400_000L)
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     val catchupDays = channel?.catchupDays ?: 0
     val maxDays = catchupDays.coerceIn(1, 7)
@@ -131,7 +132,7 @@ fun CatchupScreen(
         if (catchupDays == 0) {
             EmptyState(
                 title = stringResource(R.string.catchup_unavailable),
-                body = "Bu kanal iÃ§in geÃ§miÅŸ yayÄ±n sunucu tarafÄ±ndan desteklenmiyor.",
+                Bu kanal i
             )
             return@Column
         }
@@ -139,7 +140,7 @@ fun CatchupScreen(
         if (past.isEmpty()) {
             EmptyState(
                 title = stringResource(R.string.empty_no_catchup),
-                body = "SeÃ§ili gÃ¼n iÃ§in kayÄ±tlÄ± program bulunamadÄ±.",
+                Bu kanal i
             )
             return@Column
         }
@@ -156,7 +157,7 @@ fun CatchupScreen(
                     channelId = channelId,
                     onPlay = {
                         context.startActivity(
-                            com.hp.novatv.ui.PlayerActivity.intent(
+                            PlayerActivity.intent(
                                 context = context,
                                 channelId = channelId,
                                 startEpoch = program.startEpoch,
@@ -230,7 +231,7 @@ private fun CatchupRow(
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    text = "${program.startEpoch.asTime()} â€“ ${program.endEpoch.asTime()}",
+                    Bu kanal i
                     color = NovaOnSurfaceVariant,
                     fontSize = (LocalBaseSp.current * 0.44f).sp,
                 )
@@ -255,11 +256,11 @@ fun ProgramDetailScreen(
     val context = androidx.compose.ui.platform.LocalContext.current
 
     val channel by repository.observeChannel(channelId)
-        .collectAsStateWithLifecycle(initial = null)
+        .collectAsStateWithLifecycle(initialValue = null)
 
     val programs by repository
         .observeChannelPrograms(channelId, startOfDay() - 3 * 86_400_000L, startOfDay() + 86_400_000L)
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     val program = remember(programs, programId) {
         programs.firstOrNull { it.id == programId }
@@ -268,7 +269,7 @@ fun ProgramDetailScreen(
     if (program == null) {
         EmptyState(
             title = stringResource(R.string.error_generic),
-            body = "Program bilgisi bulunamadÄ±.",
+            body = "Program bilgisi bulunamadi.",
             actionLabel = stringResource(R.string.back),
             onAction = onBack,
         )
@@ -335,7 +336,7 @@ fun ProgramDetailScreen(
                     if (program.category.isNotBlank()) ChannelBadge(program.category)
                     if (program.rating.isNotBlank()) ChannelBadge(program.rating)
                     if (isPast) {
-                        ChannelBadge("GEÃ‡MÄ°Å", background = NovaOnSurfaceVariant)
+                        Bu kanal i
                     } else {
                         ChannelBadge("CANLI", background = NovaLive)
                     }
@@ -343,8 +344,8 @@ fun ProgramDetailScreen(
 
                 // Saat araligi + sure
                 Text(
-                    text = "${program.startEpoch.asTime()} â€“ ${program.endEpoch.asTime()}" +
-                        "  Â·  " + program.durationMs.asDurationLabel(),
+                    Bu kanal i
+                        Bu kanal i
                     color = NovaOnSurfaceVariant,
                     fontSize = (LocalBaseSp.current * 0.5f).sp,
                     modifier = Modifier.padding(top = 12.dp),
@@ -388,7 +389,7 @@ fun ProgramDetailScreen(
                     Surface(
                         onClick = {
                             context.startActivity(
-                                com.hp.novatv.ui.PlayerActivity.intent(
+                                PlayerActivity.intent(
                                     context = context,
                                     channelId = channelId,
                                     startEpoch = if (isPast) program.startEpoch else null,
@@ -412,7 +413,7 @@ fun ProgramDetailScreen(
                         Surface(
                             onClick = {
                                 context.startActivity(
-                                    com.hp.novatv.ui.PlayerActivity.intent(context, ch.id),
+                                    PlayerActivity.intent(context, ch.id),
                                 )
                             },
                             shape = RoundedCornerShape(8.dp),

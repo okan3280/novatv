@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
+import com.hp.novatv.ui.components.Surface
 import androidx.tv.material3.Text
 import com.hp.novatv.AppContainer
 import com.hp.novatv.NovaTvApp
@@ -84,7 +84,7 @@ fun EpgRoute(
     }
 
     val channels by repository.observeChannels(effectiveId)
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     if (channels.isEmpty()) {
         EmptyState(
@@ -455,5 +455,5 @@ private fun <T> produceEpg(
     val flow = remember(channelIds, dayStart) {
         repository.observeEpg(channelIds, from, to)
     }
-    return flow.collectAsStateWithLifecycle(initial = emptyMap())
+    return flow.collectAsStateWithLifecycle(initialValue = emptyMap())
 }

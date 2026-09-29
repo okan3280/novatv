@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.tv.material3.Surface
+import com.hp.novatv.ui.components.Surface
 import androidx.tv.material3.Text
 import com.hp.novatv.data.prefs.AccentColor
 
@@ -86,7 +86,7 @@ fun AccentSwatch(
         Box(contentAlignment = Alignment.Center) {
             if (selected) {
                 Text(
-                    text = "✓",
+                    text = "v",
                     color = Color.White,
                     fontSize = 22.sp,
                 )

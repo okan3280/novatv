@@ -1,4 +1,4 @@
-﻿package com.hp.novatv.ui.screens
+package com.hp.novatv.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,11 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
+import com.hp.novatv.ui.components.Surface
 import androidx.tv.material3.Text
 import com.hp.novatv.AppContainer
 import com.hp.novatv.NovaTvApp
 import com.hp.novatv.R
+import com.hp.novatv.ui.PlayerActivity
 import com.hp.novatv.core.model.Channel
 import com.hp.novatv.core.theme.LocalBaseSp
 import com.hp.novatv.core.theme.NovaOnSurfaceVariant
@@ -54,7 +56,7 @@ import kotlinx.coroutines.delay
 
 /**
  * Ekran 2: Ana ekran.
- * Sol: ikon rayi Â· Orta: grup kolonu Â· Sag: EPG grid.
+ Sol: ikon rayi
  */
 @Composable
 fun HomeScreen(
@@ -75,14 +77,14 @@ fun HomeScreen(
     }
 
     val playlists by repository.observePlaylists()
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     val effectiveId = remember(playlistId, playlists) {
         if (playlistId > 0) playlistId else playlists.firstOrNull()?.id ?: -1L
     }
 
     val groups by repository.observeGroups(effectiveId)
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     var selectedGroup by remember(effectiveId) { mutableStateOf("") }
     LaunchedEffect(groups) {
@@ -90,10 +92,10 @@ fun HomeScreen(
     }
 
     val channels by repository.observeChannelGroup(effectiveId, selectedGroup)
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     val favoriteIds by repository.observeFavoriteIds()
-        .collectAsStateWithLifecycle(initial = emptySet())
+        .collectAsStateWithLifecycle(initialValue = emptySet())
 
     // Ana ekrandaki "simdi" guncellemesi
     var now by remember { mutableLongStateOf(System.currentTimeMillis() / 1000) }
@@ -109,7 +111,7 @@ fun HomeScreen(
     if (effectiveId <= 0) {
         EmptyState(
             title = stringResource(R.string.playlist_empty_title),
-            body = "Ã–nce bir playlist seÃ§in.",
+            Sol: ikon rayi
             modifier = Modifier.fillMaxSize(),
         )
         return
@@ -195,7 +197,7 @@ fun HomeScreen(
                             isFavorite = channel.id in favoriteIds,
                             onClick = {
                                 context.startActivity(
-                                    com.hp.novatv.ui.PlayerActivity.intent(context, channel.id),
+                                    PlayerActivity.intent(context, channel.id),
                                 )
                             },
                         )
@@ -226,12 +228,12 @@ private fun IconRail(
     modifier: Modifier = Modifier,
 ) {
     val items = listOf(
-        "Ana" to "âŒ‚",
-        "Ara" to "âŒ•",
-        "GeÃ§miÅŸ" to "â†º",
-        "KayÄ±t" to "â—",
-        "Multi" to "âŠ",
-        "EPG" to "â–¦",
+        "Ana" to "TV",
+        "Ara" to "ARA",
+        "Gecmis" to "GCM",
+        "Kayit" to "KYT",
+        "Multi" to "MVT",
+        "EPG" to "EPG",
     )
 
     Column(
@@ -283,7 +285,7 @@ private fun IconRail(
             color = Color.Transparent,
         ) {
             Text(
-                text = "âš™",
+                Sol: ikon rayi
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = (LocalBaseSp.current * 0.7f).sp,
                 modifier = Modifier.padding(10.dp),
@@ -359,7 +361,7 @@ fun ChannelRow(
             }
             if (isFavorite) {
                 Text(
-                    text = "â˜…",
+                    Sol: ikon rayi
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = (LocalBaseSp.current * 0.6f).sp,
                 )
@@ -377,7 +379,7 @@ private fun CurrentProgramLine(channel: Channel, now: Long) {
     val flow = remember(channel.id) {
         repository.observeChannelPrograms(channel.id, startOfDay(), startOfDay() + 86_400_000L)
     }
-    val programs by flow.collectAsStateWithLifecycle(initial = emptyList())
+    val programs by flow.collectAsStateWithLifecycle(initialValue = emptyList())
     val current = programs.firstOrNull { it.startEpoch <= now && it.endEpoch > now }
 
     if (current == null) {
@@ -467,7 +469,7 @@ private fun EpgPreviewPanel(
         ) {
             items(channels, key = { it.id }) { channel ->
                 val programs by repository.observeCurrentProgram(channel.id)
-                    .collectAsStateWithLifecycle(initial = null)
+                    .collectAsStateWithLifecycle(initialValue = null)
                 val p = programs
                 Column(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                     Text(

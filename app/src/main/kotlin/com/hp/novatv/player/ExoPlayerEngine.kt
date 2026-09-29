@@ -74,8 +74,10 @@ class ExoPlayerEngine(
         scope.cancel()
     }
 
+    /** Ayarlari mevcut oynaticilara uygular. */
     fun setSettings(settings: UiSettings) {
-        players.forEach { it.setPlaybackSpeed(1f) }
+        // Tampon ayari bir sonraki oynatmada gecerli olur.
+        players.values.forEach { runCatching { it.setPlaybackSpeed(1f) } }
     }
 
     /** Kanal ac. */
@@ -128,7 +130,7 @@ class ExoPlayerEngine(
 
     private fun buildPlayer(slot: Int): ExoPlayer {
         val bufferMs = if (slot == 0) 15_000 else 5_000
-        val loadControl = LoadControl.Builder()
+        val loadControl = androidx.media3.exoplayer.DefaultLoadControl.Builder()
             .setBufferDurationsMs(
                 /* minBufferMs = */ bufferMs / 3,
                 /* maxBufferMs = */ bufferMs * 4,

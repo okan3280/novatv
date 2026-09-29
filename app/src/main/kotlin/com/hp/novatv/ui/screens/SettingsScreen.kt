@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
+import com.hp.novatv.ui.components.Surface
 import androidx.tv.material3.Switch
 import androidx.tv.material3.Text
 import com.hp.novatv.AppContainer
@@ -58,7 +58,7 @@ fun SettingsScreen(
     container: AppContainer = (androidx.compose.ui.platform.LocalContext.current.applicationContext as NovaTvApp).container,
 ) {
     val settings by container.settings.settings
-        .collectAsStateWithLifecycle(initial = com.hp.novatv.data.prefs.UiSettings())
+        .collectAsStateWithLifecycle(initialValue = com.hp.novatv.data.prefs.UiSettings())
 
     val scope = rememberCoroutineScope()
     var section by remember { mutableStateOf(0) }
@@ -146,7 +146,7 @@ fun SettingsScreen(
 @Composable
 private fun PlaylistsSection(container: AppContainer) {
     val playlists by container.repository.observePlaylists()
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
     val scope = rememberCoroutineScope()
 
     Column {
@@ -282,7 +282,7 @@ private fun EpgSection(
 ) {
     val scope = rememberCoroutineScope()
     val playlists by container.repository.observePlaylists()
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
     var busy by remember { mutableStateOf(false) }
 
     Column {

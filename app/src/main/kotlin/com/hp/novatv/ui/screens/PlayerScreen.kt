@@ -41,10 +41,11 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
+import com.hp.novatv.ui.components.Surface
 import androidx.tv.material3.Text
 import com.hp.novatv.AppContainer
 import com.hp.novatv.R
+import com.hp.novatv.ui.PlayerActivity
 import com.hp.novatv.core.model.Channel
 import com.hp.novatv.core.model.Program
 import com.hp.novatv.core.theme.LocalBaseSp
@@ -83,7 +84,7 @@ fun PlayerScreen(
     val context = androidx.compose.ui.platform.LocalContext.current
 
     val channel by repository.observeChannel(channelId)
-        .collectAsStateWithLifecycle(initial = null)
+        .collectAsStateWithLifecycle(initialValue = null)
 
     var engine by remember { mutableStateOf(Engine.EXOPLAYER) }
     var controlsVisible by remember { mutableStateOf(true) }
@@ -100,10 +101,10 @@ fun PlayerScreen(
     val recorder = container.recorder
 
     val currentProgram by repository.observeCurrentProgram(channelId)
-        .collectAsStateWithLifecycle(initial = null)
+        .collectAsStateWithLifecycle(initialValue = null)
 
     val playlistChannels by repository.observeChannels(channel?.playlistId ?: 0L)
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     // --- Oynatici olaylari ---
     DisposableEffect(Unit) {
@@ -407,7 +408,7 @@ private fun TopInfoCard(
             color = if (isRecording) NovaRecord else MaterialTheme.colorScheme.surfaceVariant,
         ) {
             Text(
-                text = if (isRecording) "■" else "●",
+                text = if (isRecording) "#" else "o",
                 color = Color.White,
                 fontSize = (LocalBaseSp.current * 0.6f).sp,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
@@ -494,7 +495,7 @@ private fun BottomBar(
                 color = Color.White.copy(alpha = 0.12f),
             ) {
                 Text(
-                    text = if (chromeExpanded) "▾" else "▴",
+                    text = if (chromeExpanded) "" else "",
                     color = Color.White,
                     fontSize = (LocalBaseSp.current * 0.55f).sp,
                     modifier = Modifier.padding(horizontal = 18.dp, vertical = 10.dp),

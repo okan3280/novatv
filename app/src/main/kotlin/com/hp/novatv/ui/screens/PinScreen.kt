@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.tv.material3.Text
 import com.hp.novatv.AppContainer
 import com.hp.novatv.NovaTvApp
 import com.hp.novatv.R
@@ -129,7 +130,7 @@ fun PinScreen(
             listOf("1", "2", "3"),
             listOf("4", "5", "6"),
             listOf("7", "8", "9"),
-            listOf("", "0", "⌫"),
+            listOf("", "0", "F"),
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -138,7 +139,7 @@ fun PinScreen(
                     row.forEach { key ->
                         when (key) {
                             "" -> Box(Modifier.size(96.dp))
-                            "⌫" -> Box(
+                            "F" -> Box(
                                 Modifier
                                     .size(96.dp)
                                     .clip(CircleShape)
@@ -150,7 +151,7 @@ fun PinScreen(
                                     ),
                                 contentAlignment = Alignment.Center,
                             ) {
-                                Text("⌫", color = Color.White, fontSize = 28.sp)
+                                Text("F", color = Color.White, fontSize = 28.sp)
                             }
 
                             else -> Box(

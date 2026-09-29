@@ -1,4 +1,4 @@
-﻿package com.hp.novatv.source.m3u
+package com.hp.novatv.source.m3u
 
 import android.util.Xml
 import com.hp.novatv.core.model.Program
@@ -16,7 +16,7 @@ import java.util.TimeZone
  * <tv>
  *   <channel id="tr.spor.tv"><display-name>Spor TV</display-name><icon .../></channel>
  *   <programme start="20260929100000 +0300" stop="20260929110000 +0300" channel="tr.spor.tv">
- *     <title>MaÃ§</title><desc>..</desc><category>..</category><icon .../><value>12+</value>
+ Ma
  *   </programme>
  * </tv>
  */
@@ -29,7 +29,7 @@ class XmltvParser {
     )
 
     /** tvg-id -> kanal eslemesi. */
-    fun parse(
+    suspend fun parse(
         stream: InputStream,
         onPrograms: suspend (tvgId: String, programs: List<Program>) -> Unit,
     ) {

@@ -1,4 +1,4 @@
-﻿package com.hp.novatv.ui.screens
+package com.hp.novatv.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,11 +31,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
+import com.hp.novatv.ui.components.Surface
 import androidx.tv.material3.Text
 import com.hp.novatv.AppContainer
 import com.hp.novatv.NovaTvApp
 import com.hp.novatv.R
+import com.hp.novatv.ui.PlayerActivity
 import com.hp.novatv.core.theme.LocalBaseSp
 import com.hp.novatv.core.theme.NovaOnSurfaceVariant
 import com.hp.novatv.core.util.asDateTime
@@ -61,10 +62,10 @@ fun RecordingsScreen(
     val scope = rememberCoroutineScope()
 
     val recordings by repository.observeRecordings()
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     val schedules by repository.observeAllSchedules()
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     val freeSpace = remember(recordings) { container.recorder.freeSpaceBytes() }
 
@@ -86,7 +87,7 @@ fun RecordingsScreen(
             TabChip(stringResource(R.string.recording_scheduled), tab == 1) { tab = 1 }
             Box(Modifier.weight(1f))
             Text(
-                text = "BoÅŸ: ${freeSpace.asFileSize()}",
+                text = "Bos alan: ${freeSpace.asFileSize()}",
                 color = NovaOnSurfaceVariant,
                 fontSize = (LocalBaseSp.current * 0.46f).sp,
             )
@@ -96,7 +97,7 @@ fun RecordingsScreen(
             if (recordings.isEmpty()) {
                 EmptyState(
                     title = stringResource(R.string.empty_no_recordings),
-                    body = "OynatÄ±cÄ± ekranÄ±ndaki kayÄ±t dÃ¼ÄŸmesiyle kayÄ±t baÅŸlatabilirsiniz.",
+                    Oynat
                 )
                 return@Column
             }
@@ -130,8 +131,8 @@ fun RecordingsScreen(
                                     fontWeight = FontWeight.Medium,
                                 )
                                 Text(
-                                    text = "${rec.startedAt.asDateTime()} Â· " +
-                                        rec.durationMs.asDuration() + " Â· " +
+                                    Oynat
+                                        Oynat
                                         rec.sizeBytes.asFileSize(),
                                     color = NovaOnSurfaceVariant,
                                     fontSize = (LocalBaseSp.current * 0.44f).sp,
@@ -142,7 +143,7 @@ fun RecordingsScreen(
                                 SmallAction("Oynat") {
                                     val uri = android.net.Uri.fromFile(File(rec.filePath))
                                     context.startActivity(
-                                        com.hp.novatv.ui.PlayerActivity.intent(
+                                        PlayerActivity.intent(
                                             context = context,
                                             channelId = rec.channelId,
                                             startEpoch = null,
@@ -165,7 +166,7 @@ fun RecordingsScreen(
             if (schedules.isEmpty()) {
                 EmptyState(
                     title = stringResource(R.string.recording_scheduled),
-                    body = "HenÃ¼z zamanlanmÄ±ÅŸ kayÄ±t yok. Program detay kartÄ±ndan planlayabilirsiniz.",
+                    Oynat
                 )
                 return@Column
             }
@@ -193,7 +194,7 @@ fun RecordingsScreen(
                                     overflow = TextOverflow.Ellipsis,
                                 )
                                 Text(
-                                    text = "${schedule.startEpoch.asDateTime()} â€“ " +
+                                    Oynat
                                         schedule.endEpoch.asTime(),
                                     color = NovaOnSurfaceVariant,
                                     fontSize = (LocalBaseSp.current * 0.44f).sp,

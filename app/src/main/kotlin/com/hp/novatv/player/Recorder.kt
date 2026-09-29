@@ -71,12 +71,13 @@ class Recorder(
         }
     }
 
-    private fun plainDataSource(): DataSource = DefaultDataSource(
-        context,
-        OkHttpDataSource.Factory(client).setDefaultRequestProperties(
-            mapOf("User-Agent" to "Mozilla/5.0 (Linux; Android TV) NovaTV/1.0"),
-        ),
-    )
+    private fun plainDataSource(): DataSource {
+        val httpFactory = OkHttpDataSource.Factory(client)
+            .setDefaultRequestProperties(
+                mapOf("User-Agent" to "Mozilla/5.0 (Linux; Android TV) NovaTV/1.0"),
+            )
+        return DefaultDataSource.Factory(context, httpFactory).createDataSource()
+    }
 
     /** Kayit baslatir. [dataSourceFactory] cagrisindan SONRA cagrilmalidir. */
     fun start(channel: Channel): Boolean {
@@ -105,7 +106,7 @@ class Recorder(
         activeFile = file
         activeChannel = channel
         startedAt = System.currentTimeMillis()
-        _state.value = RecorderState.Recording(channel.name, startedAt)
+        _state.value = RecorderState.Active(channel.name, startedAt)
         return true
     }
 
@@ -152,8 +153,11 @@ class Recorder(
 
     sealed interface RecorderState {
         data object Idle : RecorderState
-        data class Recording(val channelName: String, val startedAt: Long) : RecorderState
-        data class Stopped(val recording: Recording) : RecorderState
+
+        /** Kayit suruyor. */
+        data class Active(val channelName: String, val startedAt: Long) : RecorderState
+
+        data class Stopped(val recording: com.hp.novatv.core.model.Recording) : RecorderState
         data class Error(val message: String) : RecorderState
     }
 

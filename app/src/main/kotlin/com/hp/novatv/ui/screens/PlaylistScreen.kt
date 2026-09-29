@@ -1,4 +1,4 @@
-﻿package com.hp.novatv.ui.screens
+package com.hp.novatv.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,7 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.Button
 import androidx.tv.material3.Card
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
+import com.hp.novatv.ui.components.Surface
 import androidx.tv.material3.Text
 import com.hp.novatv.AppContainer
 import com.hp.novatv.NovaTvApp
@@ -56,7 +56,7 @@ fun PlaylistScreen(
     container: AppContainer = (androidx.compose.ui.platform.LocalContext.current.applicationContext as NovaTvApp).container,
 ) {
     val repository = container.repository
-    val playlists by repository.observePlaylists().collectAsStateWithLifecycle(initial = emptyList())
+    val playlists by repository.observePlaylists().collectAsStateWithLifecycle(initialValue = emptyList())
     var loading by remember { mutableStateOf(true) }
     var editing by remember { mutableStateOf<Playlist?>(null) }
     var showForm by remember { mutableStateOf(false) }
@@ -200,7 +200,7 @@ private fun PlaylistCard(
                 Text(
                     text = if (playlist.isSynced) {
                         stringResource(R.string.playlist_channels, playlist.channelCount) +
-                            " Â· " + stringResource(
+                              
                                 R.string.playlist_updated,
                                 playlist.lastSync.asDateTime(),
                             )

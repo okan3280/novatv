@@ -2,21 +2,22 @@ package com.hp.novatv.player
 
 import android.content.Context
 import android.util.Log
-import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import org.videolan.libvlc.LibVLC
 import org.videolan.libvlc.Media
 import org.videolan.libvlc.MediaPlayer
+import org.videolan.libvlc.interfaces.IVLCVout
 
 /**
  * libVLC yedek motoru. ExoPlayer'in cozemedigi formatlar icin:
  * ham .ts, rtmp, rtsp, acik codec'ler, bazi "canli" HLS varyantlari.
  *
  * Dogrulanmis imzalar (libvlc-all 3.7.6):
- *   LibVLC(Context, String[])
+ *   LibVLC(Context, List<String>)
  *   MediaPlayer(ILibVLC)
  *   Media(ILibVLC, String)
+ *   MediaPlayer.vout : IVLCVout
  *   IVLCVout.setVideoSurface(Surface, SurfaceHolder)
  *   MediaPlayer.setVideoScale(ScaleType)
  */
@@ -31,9 +32,12 @@ class VlcEngine(
     val isPlaying: Boolean get() = mediaPlayer?.isPlaying == true
     val isAvailable: Boolean get() = libVlc != null
 
+    /** Video cikis arabirimi. */
+    private val vout: IVLCVout? get() = mediaPlayer?.vout
+
     fun initialize(): Boolean {
         if (libVlc != null) return true
-        val options = arrayOf(
+        val options = listOf(
             "--avcodec-caching=2000",
             "--network-caching=2500",
             "--file-caching=1500",
@@ -56,21 +60,26 @@ class VlcEngine(
         surfaceView = view
         view.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) = bind(holder)
-            override fun surfaceChanged(holder: SurfaceHolder, f: Int, w: Int, h: Int) =
-                bind(holder)
+
+            override fun surfaceChanged(
+                holder: SurfaceHolder,
+                format: Int,
+                width: Int,
+                height: Int,
+            ) = bind(holder)
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {
-                mediaPlayer?.setVideoSurface(null, null)
+                runCatching { vout?.setVideoSurface(null, null) }
             }
         })
     }
 
     private fun bind(holder: SurfaceHolder) {
-        mediaPlayer?.setVideoSurface(holder.surface, holder)
+        runCatching { vout?.setVideoSurface(holder.surface, holder) }
     }
 
     fun detach() {
-        mediaPlayer?.setVideoSurface(null, null)
+        runCatching { vout?.setVideoSurface(null, null) }
         surfaceView = null
     }
 
@@ -96,17 +105,23 @@ class VlcEngine(
             return false
         }
 
-        player.setMedia(media)
-        player.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT)
-        player.setAspectRatio(null)
+        runCatching {
+            player.setMedia(media)
+            player.setVideoScale(MediaPlayer.ScaleType.SURFACE_BEST_FIT)
+            player.setAspectRatio(null)
+        }.onFailure { Log.e(TAG, "VLC ayarlanamadi", it) }
 
-        surfaceView?.holder?.let { player.setVideoSurface(it.surface, it) }
+        surfaceView?.holder?.let { holder ->
+            runCatching { player.vout?.setVideoSurface(holder.surface, holder) }
+        }
 
-        player.play()
+        runCatching { player.play() }
+            .onFailure { Log.e(TAG, "VLC oynatma baslamadi", it); return false }
+
         return true
     }
 
-    /** Mevcut oynaticiyi yeni URL ile devam ettir (zap icin). */
+    /** Mevcut oynaticiyi yeni URL ile degistirir (zap icin). */
     fun switchSource(url: String) {
         val vlc = libVlc
         val player = mediaPlayer
@@ -115,17 +130,22 @@ class VlcEngine(
             return
         }
         runCatching {
-            val media = Media(vlc, url)
-            player.setMedia(media)
+            player.setMedia(Media(vlc, url))
             player.play()
         }.onFailure { Log.e(TAG, "VLC kaynak degistirilemedi", it) }
     }
 
-    fun stop() = runCatching { mediaPlayer?.stop() }.let { }
+    fun stop() {
+        runCatching { mediaPlayer?.stop() }
+    }
 
-    fun pause() = runCatching { mediaPlayer?.pause() }.let { }
+    fun pause() {
+        runCatching { mediaPlayer?.pause() }
+    }
 
-    fun resume() = runCatching { mediaPlayer?.play() }.let { }
+    fun resume() {
+        runCatching { mediaPlayer?.play() }
+    }
 
     fun releasePlayer() {
         runCatching { mediaPlayer?.stop() }

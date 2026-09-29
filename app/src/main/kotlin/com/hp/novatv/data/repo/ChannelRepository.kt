@@ -506,6 +506,7 @@ internal fun Channel.toEntity() = ChannelEntity(
 internal fun ProgramEntity.toModel() = Program(
     id = id,
     channelId = channelId,
+    tvgId = tvgId,
     startEpoch = startEpoch,
     endEpoch = endEpoch,
     title = title,

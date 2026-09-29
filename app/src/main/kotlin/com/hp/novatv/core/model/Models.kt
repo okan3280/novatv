@@ -32,7 +32,8 @@ data class Playlist(
 /** Bir kanal. */
 data class Channel(
     val id: Long = 0,
-    val playlistId: Long,
+    /** Sahip playlist. Adaptorler 0 doner; repository gercek id'yi yazar. */
+    val playlistId: Long = 0,
     /** Saglayici tarafindaki stabil kimlik (Xtream stream_id, M3U satir no, Stalker cmd). */
     val streamId: String,
     val number: Int = 0,
@@ -87,6 +88,8 @@ enum class StreamType(val label: String) {
 data class Program(
     val id: Long = 0,
     val channelId: Long,
+    /** Saglayicinin kanal kimligi (tvg-id). Program -> kanal eslesmesi icin. */
+    val tvgId: String = "",
     val startEpoch: Long,
     val endEpoch: Long,
     val title: String,

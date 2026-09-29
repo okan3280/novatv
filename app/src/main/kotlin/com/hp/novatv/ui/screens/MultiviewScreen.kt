@@ -3,7 +3,8 @@ package com.hp.novatv.ui.screens
 import android.view.SurfaceView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickableimport androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,7 +38,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.tv.material3.MaterialTheme
-import androidx.tv.material3.Surface
+import com.hp.novatv.ui.components.Surface
 import androidx.tv.material3.Text
 import com.hp.novatv.AppContainer
 import com.hp.novatv.NovaTvApp
@@ -66,7 +67,7 @@ fun MultiviewScreen(
     val scope = rememberCoroutineScope()
 
     val settings by container.settings.settings
-        .collectAsStateWithLifecycle(initial = com.hp.novatv.data.prefs.UiSettings())
+        .collectAsStateWithLifecycle(initialValue = com.hp.novatv.data.prefs.UiSettings())
 
     val limit = settings.maxStreams.coerceIn(2, ExoPlayerEngine.MAX_SLOTS)
 
@@ -80,12 +81,12 @@ fun MultiviewScreen(
         repository.lastPlaylistId.collect { id -> playlistId = id }
     }
     val playlists by repository.observePlaylists()
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
     val effectiveId = remember(playlistId, playlists) {
         if (playlistId > 0) playlistId else playlists.firstOrNull()?.id ?: -1L
     }
     val channels by repository.observeChannels(effectiveId)
-        .collectAsStateWithLifecycle(initial = emptyList())
+        .collectAsStateWithLifecycle(initialValue = emptyList())
 
     // Yeni kanal secildiginde oynatici slotlarina yaz
     LaunchedEffect(slots) {
@@ -268,11 +269,11 @@ private fun MultiviewCell(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f),
                 )
-                SmallAction("⇄", onClick = onAdd)
+                SmallAction("", onClick = onAdd)
                 Box(Modifier.padding(horizontal = 4.dp))
                 SmallAction(if (isExpanded) "⤡" else "⤢", onClick = onExpand)
                 Box(Modifier.padding(horizontal = 4.dp))
-                SmallAction("✕", destructive = true, onClick = onRemove)
+                SmallAction("", destructive = true, onClick = onRemove)
             }
         }
     }
