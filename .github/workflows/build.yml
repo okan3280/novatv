@@ -37,14 +37,16 @@ jobs:
       # "Failed to find package 'tools'" ile cokuyor.
       # ubuntu-latest'te Android SDK onceden kurulu; sdkmanager PATH'te
       # olmadigi icin mutlak yol ile cagriliyor.
-
+      #
+      # ONEMLI: Android 37 artik minor surumlu yayimlaniyor.
+      # "platforms;android-37" YOK; "platforms;android-37.0" var.
       - name: SDK bilesenleri
         run: |
           SDKMANAGER="$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | tail -1)"
           echo "sdkmanager: $SDKMANAGER"
           yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
           "$SDKMANAGER" --install "platform-tools" \
-                                 "platforms;android-37" \
+                                 "platforms;android-37.0" \
                                  "build-tools;36.0.0"
 
       - name: Derle
