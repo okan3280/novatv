@@ -140,6 +140,15 @@ fun HomeScreen(
             modifier = Modifier.width(96.dp).fillMaxHeight(),
         )
 
+        // Gosterilecek kanal listesi (favori filtresi uygulanmis)
+        val visible = remember(channels, favoriteIds, selectedGroup) {
+            if (selectedGroup == FAVORITES) {
+                channels.filter { it.id in favoriteIds }
+            } else {
+                channels
+            }
+        }
+
         // --- Orta: grup kolonu + kanallar ---
         Column(Modifier.weight(1f).fillMaxHeight()) {
 
@@ -164,14 +173,6 @@ fun HomeScreen(
                         selected = selectedGroup == group,
                         onClick = { selectedGroup = group },
                     )
-                }
-            }
-
-            val visible = remember(channels, favoriteIds, selectedGroup) {
-                if (selectedGroup == FAVORITES) {
-                    channels.filter { it.id in favoriteIds }
-                } else {
-                    channels
                 }
             }
 
@@ -373,12 +374,14 @@ fun ChannelRow(
 
 @Composable
 private fun CurrentProgramLine(channel: Channel, now: Long) {
-    val repository = remember(channel.id) {
-        (androidx.compose.ui.platform.LocalContext.current.applicationContext as NovaTvApp)
-            .container.repository
-    }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val app = context.applicationContext as NovaTvApp
     val flow = remember(channel.id) {
-        repository.observeChannelPrograms(channel.id, startOfDay(), startOfDay() + 86_400_000L)
+        app.container.repository.observeChannelPrograms(
+            channel.id,
+            startOfDay(),
+            startOfDay() + 86_400_000L,
+        )
     }
     val programs by flow.collectAsStateWithLifecycle(initialValue = emptyList())
     val current = programs.firstOrNull { it.startEpoch <= now && it.endEpoch > now }

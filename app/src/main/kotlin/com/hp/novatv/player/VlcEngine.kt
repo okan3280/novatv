@@ -31,15 +31,6 @@ class VlcEngine(
     val isPlaying: Boolean get() = mediaPlayer?.isPlaying == true
     val isAvailable: Boolean get() = libVlc != null
 
-    /**
-     * Video cikis arabirimi.
-     *
-     * MediaPlayer.vout alani Kotlin tarafindan gorunur degil
-     * (yalnizca IVLCVout donduren bir alan). Bu yuzden yuzeye
-     * baglamak icin setVideoSurface yerine AWindow API'si kullanilir.
-     */
-    private val vout: IVLCVout? get() = mediaPlayer?.vout
-
     fun initialize(): Boolean {
         if (libVlc != null) return true
         val options = listOf(
@@ -72,8 +63,13 @@ class VlcEngine(
      */
     private fun bindSurface(holder: SurfaceHolder?) {
         val player = mediaPlayer ?: return
-        runCatching { player.setSurface(0, holder?.surface, holder) }
-            .onFailure { Log.w(TAG, "yuzey baglanamadi", it) }
+        // AWindow#setSurface(int, Surface, SurfaceHolder)
+        // id: ID_VIDEO = 0, ID_SUBTITLES = 1
+        runCatching {
+            if (player is org.videolan.libvlc.AWindow) {
+                player.setSurface(0, holder?.surface, holder)
+            }
+        }.onFailure { Log.w(TAG, "yuzey baglanamadi", it) }
     }
 
     fun attach(view: SurfaceView) {

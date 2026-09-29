@@ -10,7 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.rememberTextFieldState
+import androidx.compose.foundation.text.input.TextFieldValue
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
@@ -21,7 +22,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -67,7 +67,12 @@ fun TvTextField(
     LaunchedEffect(value) {
         val current = state.text.toString()
         if (current != value) {
-            state.edit { setTextAndSelection(TextFieldValue(value)) }
+            state.edit {
+                setTextAndSelection(
+                    androidx.compose.ui.text.TextRange(0, value.length),
+                    value,
+                )
+            }
         }
     }
 

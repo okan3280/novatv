@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hp.novatv.ui.screens.CatchupScreen
+import com.hp.novatv.ui.screens.EpgRoute
 import com.hp.novatv.ui.screens.HomeScreen
 import com.hp.novatv.ui.screens.MultiviewScreen
 import com.hp.novatv.ui.screens.PinScreen

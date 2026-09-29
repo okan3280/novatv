@@ -445,15 +445,14 @@ private fun DayChip(label: String, selected: Boolean, onClick: () -> Unit) {
 
 /** EPG akisini toplar. */
 @Composable
-private fun <T> produceEpg(
+private fun produceEpg(
     repository: com.hp.novatv.data.repo.ChannelRepository,
     channelIds: List<Long>,
     dayStart: Long,
 ): androidx.compose.runtime.State<Map<Long, List<Program>>> {
-    val from = dayStart
     val to = dayStart + 86_400_000L
     val flow = remember(channelIds, dayStart) {
-        repository.observeEpg(channelIds, from, to)
+        repository.observeEpg(channelIds, dayStart, to)
     }
     return flow.collectAsStateWithLifecycle(initialValue = emptyMap())
 }
