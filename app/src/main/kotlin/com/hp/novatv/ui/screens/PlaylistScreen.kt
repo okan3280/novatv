@@ -200,7 +200,7 @@ private fun PlaylistCard(
                 Text(
                     text = if (playlist.isSynced) {
                         stringResource(R.string.playlist_channels, playlist.channelCount) +
-                              
+                            " - " + stringResource(
                                 R.string.playlist_updated,
                                 playlist.lastSync.asDateTime(),
                             )

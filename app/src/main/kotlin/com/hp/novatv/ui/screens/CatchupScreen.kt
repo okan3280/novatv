@@ -132,7 +132,7 @@ fun CatchupScreen(
         if (catchupDays == 0) {
             EmptyState(
                 title = stringResource(R.string.catchup_unavailable),
-                Bu kanal i
+                body = "Bu kanal icin gecmis yayin sunucu tarafindan desteklenmiyor.",
             )
             return@Column
         }
@@ -140,7 +140,7 @@ fun CatchupScreen(
         if (past.isEmpty()) {
             EmptyState(
                 title = stringResource(R.string.empty_no_catchup),
-                Bu kanal i
+                body = "Secili gun icin kayitli program bulunamadi.",
             )
             return@Column
         }
@@ -231,12 +231,12 @@ private fun CatchupRow(
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    Bu kanal i
+                    text = "${program.startEpoch.asTime()} - ${program.endEpoch.asTime()}",
                     color = NovaOnSurfaceVariant,
                     fontSize = (LocalBaseSp.current * 0.44f).sp,
                 )
             }
-            ChannelBadge("Ä°ZLE", background = MaterialTheme.colorScheme.primary)
+            ChannelBadge("IZLE", background = MaterialTheme.colorScheme.primary)
         }
     }
 }
@@ -336,7 +336,7 @@ fun ProgramDetailScreen(
                     if (program.category.isNotBlank()) ChannelBadge(program.category)
                     if (program.rating.isNotBlank()) ChannelBadge(program.rating)
                     if (isPast) {
-                        Bu kanal i
+                        ChannelBadge("GECMIS", background = NovaOnSurfaceVariant)
                     } else {
                         ChannelBadge("CANLI", background = NovaLive)
                     }
@@ -344,8 +344,8 @@ fun ProgramDetailScreen(
 
                 // Saat araligi + sure
                 Text(
-                    Bu kanal i
-                        Bu kanal i
+                    text = "${program.startEpoch.asTime()} - ${program.endEpoch.asTime()}"
+                        .plus("  (%${program.durationMs.asDurationLabel()})"),
                     color = NovaOnSurfaceVariant,
                     fontSize = (LocalBaseSp.current * 0.5f).sp,
                     modifier = Modifier.padding(top = 12.dp),

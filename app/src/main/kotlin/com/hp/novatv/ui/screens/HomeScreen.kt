@@ -112,7 +112,7 @@ fun HomeScreen(
     if (effectiveId <= 0) {
         EmptyState(
             title = stringResource(R.string.playlist_empty_title),
-            Sol: ikon rayi
+            body = "Once bir playlist secin.",
             modifier = Modifier.fillMaxSize(),
         )
         return
@@ -286,9 +286,9 @@ private fun IconRail(
             color = Color.Transparent,
         ) {
             Text(
-                Sol: ikon rayi
+                text = "AYAR",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = (LocalBaseSp.current * 0.7f).sp,
+                fontSize = (LocalBaseSp.current * 0.5f).sp,
                 modifier = Modifier.padding(10.dp),
             )
         }
@@ -362,9 +362,9 @@ fun ChannelRow(
             }
             if (isFavorite) {
                 Text(
-                    Sol: ikon rayi
+                    text = "*",
                     color = MaterialTheme.colorScheme.primary,
-                    fontSize = (LocalBaseSp.current * 0.6f).sp,
+                    fontSize = (LocalBaseSp.current * 0.8f).sp,
                 )
             }
         }

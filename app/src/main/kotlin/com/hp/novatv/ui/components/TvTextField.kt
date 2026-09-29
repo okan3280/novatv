@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
@@ -58,7 +59,7 @@ fun TvTextField(
     val base = LocalBaseSp.current
 
     // State tabanli BasicTextField
-    val state = androidx.compose.foundation.text.rememberTextFieldState(
+    val state = rememberTextFieldState(
         initialText = value,
     )
 

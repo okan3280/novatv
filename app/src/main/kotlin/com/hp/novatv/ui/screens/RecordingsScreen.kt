@@ -97,7 +97,7 @@ fun RecordingsScreen(
             if (recordings.isEmpty()) {
                 EmptyState(
                     title = stringResource(R.string.empty_no_recordings),
-                    Oynat
+                    body = "Oynatici ekranindaki kayit dugmesiyle kayit baslatabilirsiniz.",
                 )
                 return@Column
             }
@@ -131,9 +131,9 @@ fun RecordingsScreen(
                                     fontWeight = FontWeight.Medium,
                                 )
                                 Text(
-                                    Oynat
-                                        Oynat
-                                        rec.sizeBytes.asFileSize(),
+                                    text = "${rec.startedAt.asDateTime()} - "
+                                        + rec.durationMs.asDuration() + " - "
+                                        + rec.sizeBytes.asFileSize(),
                                     color = NovaOnSurfaceVariant,
                                     fontSize = (LocalBaseSp.current * 0.44f).sp,
                                 )
@@ -166,7 +166,7 @@ fun RecordingsScreen(
             if (schedules.isEmpty()) {
                 EmptyState(
                     title = stringResource(R.string.recording_scheduled),
-                    Oynat
+                    body = "Henuz zamanlanmis kayit yok. Program detay kartindan planlayabilirsiniz.",
                 )
                 return@Column
             }
@@ -194,8 +194,8 @@ fun RecordingsScreen(
                                     overflow = TextOverflow.Ellipsis,
                                 )
                                 Text(
-                                    Oynat
-                                        schedule.endEpoch.asTime(),
+                                    text = "${schedule.startEpoch.asDateTime()} - "
+                                        + schedule.endEpoch.asTime(),
                                     color = NovaOnSurfaceVariant,
                                     fontSize = (LocalBaseSp.current * 0.44f).sp,
                                 )

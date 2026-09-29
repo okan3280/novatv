@@ -58,6 +58,7 @@ import com.hp.novatv.player.Engine
 import com.hp.novatv.ui.components.ChannelLogo
 import com.hp.novatv.ui.components.LoadingState
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -106,6 +107,38 @@ fun PlayerScreen(
     val playlistChannels by repository.observeChannels(channel?.playlistId ?: 0L)
         .collectAsStateWithLifecycle(initialValue = emptyList())
 
+    // Oynatma URL'ini cozer ve dogru motoru baslatir.
+    // Compose icinde suspend fonksiyon tanimlamak sorunlu; bu yuzden
+    // top-level yardimci fonksiyon kullanilir.
+    suspend fun reloadCurrent() {
+        val ch = channel ?: return
+        val url = repository.resolvePlayUrl(ch, startEpoch, durationMs)
+        if (url.isBlank()) return
+
+        val enginePref = container.settings.settings.first().playerEngine
+        val preferVlc = when (enginePref) {
+            PlayerEnginePref.VLC -> true
+            PlayerEnginePref.EXOPLAYER -> false
+            PlayerEnginePref.AUTO -> ch.streamType in setOf(
+                com.hp.novatv.core.model.StreamType.TS,
+                com.hp.novatv.core.model.StreamType.RTMP,
+                com.hp.novatv.core.model.StreamType.RTSP,
+                com.hp.novatv.core.model.StreamType.KODI,
+            )
+        }
+
+        if (engine == Engine.VLC || preferVlc) {
+            engine = Engine.VLC
+            if (!container.vlcEngine.play(url)) {
+                // VLC da basaramadi: ExoPlayer'a geri don
+                engine = Engine.EXOPLAYER
+                container.exoEngine.play(player, ch, url)
+            }
+        } else {
+            container.exoEngine.play(player, ch, url)
+        }
+    }
+
     // --- Oynatici olaylari ---
     DisposableEffect(Unit) {
         val listener = object : Player.Listener {
@@ -135,34 +168,6 @@ fun PlayerScreen(
         onDispose { player.removeListener(listener) }
     }
 
-    suspend fun reloadCurrent() {
-        val ch = channel ?: return
-        val url = repository.resolvePlayUrl(ch, startEpoch, durationMs)
-        if (url.isBlank()) return
-
-        val enginePref = container.settings.settings.let { it.playerEngine }
-        val preferVlc = when (enginePref) {
-            PlayerEnginePref.VLC -> true
-            PlayerEnginePref.EXOPLAYER -> false
-            PlayerEnginePref.AUTO -> ch.streamType in setOf(
-                com.hp.novatv.core.model.StreamType.TS,
-                com.hp.novatv.core.model.StreamType.RTMP,
-                com.hp.novatv.core.model.StreamType.RTSP,
-                com.hp.novatv.core.model.StreamType.KODI,
-            )
-        }
-
-        if (engine == Engine.VLC || preferVlc) {
-            engine = Engine.VLC
-            if (!container.vlcEngine.play(url)) {
-                // VLC da basaramadi: ExoPlayer'a geri don
-                engine = Engine.EXOPLAYER
-                container.exoEngine.play(player, ch, url)
-            }
-        } else {
-            container.exoEngine.play(player, ch, url)
-        }
-    }
 
     // Kanal yuklendiginde oynat
     LaunchedEffect(channel?.id, startEpoch) {
