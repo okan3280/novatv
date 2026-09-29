@@ -35,15 +35,17 @@ jobs:
       # NOT: android-actions/setup-android KULLANILMIYOR.
       # v3 hala var olmayan 'tools' paketini kurmaya calisiyor ve
       # "Failed to find package 'tools'" ile cokuyor.
-      # ubuntu-latest'te Android SDK onceden kuruludur; sadece
-      # ihtiyac duyulan bilesenleri ekliyoruz.
+      # ubuntu-latest'te Android SDK onceden kurulu; sdkmanager PATH'te
+      # olmadigi icin mutlak yol ile cagriliyor.
 
       - name: SDK bilesenleri
         run: |
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager --install "platform-tools" \
-                            "platforms;android-37" \
-                            "build-tools;36.0.0"
+          SDKMANAGER="$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | tail -1)"
+          echo "sdkmanager: $SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+          "$SDKMANAGER" --install "platform-tools" \
+                                 "platforms;android-37" \
+                                 "build-tools;36.0.0"
 
       - name: Derle
         run: gradle :app:assembleRelease --stacktrace --no-daemon

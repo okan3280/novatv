@@ -30,13 +30,15 @@ jobs:
           gradle-version: '9.6.0'
 
       # setup-android@v3 kullanilmiyor: 'tools' paketini arıyor ve cokuyor.
-      # ubuntu-latest'te SDK onceden kurulu.
+      # ubuntu-latest'te SDK onceden kurulu; sdkmanager mutlak yol ile.
       - name: SDK bilesenleri
         run: |
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager --install "platform-tools" \
-                            "platforms;android-37" \
-                            "build-tools;36.0.0"
+          SDKMANAGER="$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | tail -1)"
+          echo "sdkmanager: $SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+          "$SDKMANAGER" --install "platform-tools" \
+                                 "platforms;android-37" \
+                                 "build-tools;36.0.0"
 
       # Ana anahtar repo'ya girmez; GitHub Secrets'tan gelir.
       - name: Keystore
