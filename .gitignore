@@ -21,3 +21,6 @@ novatv-*.apk
 # imza anahtari - asla repoya girmez
 *.jks
 tools/
+
+apk/
+app-release-unsigned.apk
