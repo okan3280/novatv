@@ -21,6 +21,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -138,19 +139,15 @@ fun TvTextField(
                     imeAction = imeAction,
                 ),
                 // Compose 1.12: keyboardActions -> onKeyboardAction
-                onKeyboardAction = { scope ->
+                // KeyboardActions metotlari artik () -> Unit aliyor.
+                onKeyboardAction = {
                     when (imeAction) {
-                        androidx.compose.ui.text.input.ImeAction.Done ->
-                            keyboardActions.onDone(scope)
-                        androidx.compose.ui.text.input.ImeAction.Next ->
-                            keyboardActions.onNext(scope)
-                        androidx.compose.ui.text.input.ImeAction.Search ->
-                            keyboardActions.onSearch(scope)
-                        androidx.compose.ui.text.input.ImeAction.Go ->
-                            keyboardActions.onGo(scope)
-                        androidx.compose.ui.text.input.ImeAction.Send ->
-                            keyboardActions.onSend(scope)
-                        else -> keyboardActions.onDefault(scope)
+                        ImeAction.Done -> keyboardActions.onDone()
+                        ImeAction.Next -> keyboardActions.onNext()
+                        ImeAction.Search -> keyboardActions.onSearch()
+                        ImeAction.Go -> keyboardActions.onGo()
+                        ImeAction.Send -> keyboardActions.onSend()
+                        else -> Unit
                     }
                 },
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
