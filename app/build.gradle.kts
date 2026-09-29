@@ -22,9 +22,10 @@ android {
         versionName = "1.0.0"
 
         ndk {
-            // TCL 65Q6C arm64 olabilir ama 32-bit cihazlarda da calismali.
-            // Tek ABI ile paketlenince "uyumlu degil" hatasi veriyor.
-            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
+            // libVLC tum 4 ABI'yi iceriyor. Hicbir ABI kombinasyonunda
+            // INSTALL_FAILED_NO_MATCHING_ABIS alinmasin diye hepsi
+            // paketleniyor. Boyut onemsiz: tek kullanim cihaz.
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86")
         }
     }
 

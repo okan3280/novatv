@@ -50,14 +50,41 @@ jobs:
                                  "build-tools;36.0.0"
 
       - name: Derle
-        run: gradle :app:assembleRelease --stacktrace --no-daemon
+        run: gradle :app:assembleRelease :app:assembleDebug --stacktrace --no-daemon
+
+      - name: APK bilgisi
+        run: |
+          BT="$ANDROID_HOME/build-tools/36.0.0"
+          for f in app/build/outputs/apk/*/*.apk; do
+            echo "=== $f ($(du -h "$f" | cut -f1)) ==="
+            "$BT/aapt2" dump badging "$f" \
+              | grep -E "^(package:|sdkVersion|targetSdkVersion|native-code|uses-feature|leanback)" || true
+            echo
+          done
 
       - name: APK yükle
         uses: actions/upload-artifact@v4
         with:
           name: novatv-apk
-          path: app/build/outputs/apk/release/*.apk
+          path: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/apk/debug/*.apk
           retention-days: 30
+
+      - name: APK doğrulama
+        run: |
+          BT="$ANDROID_HOME/build-tools/36.0.0"
+          for f in app/build/outputs/apk/*/*.apk; do
+            echo "=== $f ==="
+            if "$BT/apksigner" verify --print-certs "$f"; then
+              echo "  IMZA GECERLI"
+            else
+              echo "  !!! IMZA GECERSIZ"
+            fi
+            # Native kutuphaneler 16 KB sayfa hizalamasina uygun mu
+            "$BT/zipalign" -c -P 16 -v 4 "$f" > /dev/null 2>&1 \
+              && echo "  zipalign OK" || echo "  zipalign uyarisi"
+          done
 
       - name: Derleme logu
         if: always()
