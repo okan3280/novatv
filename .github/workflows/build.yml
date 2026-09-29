@@ -32,17 +32,18 @@ jobs:
           gradle-version: '9.6.0'
 
       # Compose 1.12.1 -> compileSdk 37, build-tools 36.0.0
-      - name: Android SDK
-        uses: android-actions/setup-android@v3
+      # NOT: android-actions/setup-android KULLANILMIYOR.
+      # v3 hala var olmayan 'tools' paketini kurmaya calisiyor ve
+      # "Failed to find package 'tools'" ile cokuyor.
+      # ubuntu-latest'te Android SDK onceden kuruludur; sadece
+      # ihtiyac duyulan bilesenleri ekliyoruz.
 
-      - name: SDK bileşenleri
+      - name: SDK bilesenleri
         run: |
-          sdkmanager "platform-tools" \
-                    "platforms;android-37" \
-                    "build-tools;36.0.0"
-
-      - name: Lisansları kabul et
-        run: yes | sdkmanager --licenses > /dev/null || true
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager --install "platform-tools" \
+                            "platforms;android-37" \
+                            "build-tools;36.0.0"
 
       - name: Derle
         run: gradle :app:assembleRelease --stacktrace --no-daemon
