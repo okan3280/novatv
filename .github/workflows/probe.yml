@@ -1,0 +1,14 @@
+﻿name: probe
+on: workflow_dispatch
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: list
+        run: |
+          SDKM="$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager | tail -1)"
+          echo "--- platforms ---"
+          "$SDKM" --list 2>/dev/null | grep -E "^\s+platforms;android-3[5-9]" | head -20
+          echo "--- build-tools 36 ---"
+          "$SDKM" --list 2>/dev/null | grep -E "build-tools;3[6-9]" | head -20
