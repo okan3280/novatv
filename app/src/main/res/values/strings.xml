@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NovaTV</string>
+
+    <!-- Ana ekran -->
+    <string name="nav_home">Ana Ekran</string>
+    <string name="nav_tv">TV Rehberi</string>
+    <string name="nav_movies">Filmler</string>
+    <string name="nav_series">Diziler</string>
+    <string name="nav_search">Arama</string>
+    <string name="nav_catchup">Geçmiş</string>
+    <string name="nav_recordings">Kayıtlar</string>
+    <string name="nav_multiview">Multiview</string>
+    <string name="nav_settings">Ayarlar</string>
+    <string name="nav_favorites">Favoriler</string>
+    <string name="nav_watchlist">İzleme Listesi</string>
+    <string name="nav_history">Son İzlenenler</string>
+
+    <!-- Playlist -->
+    <string name="playlist_empty_title">Henüz playlist yok</string>
+    <string name="playlist_empty_body">Başlamak için bir playlist ekleyin. NovaTV; M3U, Xtream Codes ve Stalker Portal destekler.</string>
+    <string name="playlist_add">Liste Ekle</string>
+    <string name="playlist_edit">Listeyi Düzenle</string>
+    <string name="playlist_delete">Listeyi Sil</string>
+    <string name="playlist_refresh">Yenile</string>
+    <string name="playlist_updated">Son güncelleme: %1$s</string>
+    <string name="playlist_never">Hiç güncellenmedi</string>
+    <string name="playlist_channels">%1$d kanal</string>
+    <string name="playlist_delete_confirm">“%1$s” listesi ve tüm kanalları silinsin mi?</string>
+
+    <!-- Playlist turleri -->
+    <string name="type_m3u">M3U Listesi</string>
+    <string name="type_xtream">Xtream Codes</string>
+    <string name="type_stalker">Stalker Portal</string>
+
+    <!-- Form alanlari -->
+    <string name="field_name">Liste adı</string>
+    <string name="field_url">Sunucu / M3U adresi</string>
+    <string name="field_epg_url">EPG (XMLTV) adresi</string>
+    <string name="field_username">Kullanıcı adı</string>
+    <string name="field_password">Parola</string>
+    <string name="field_mac">MAC adresi (Stalker)</string>
+    <string name="field_portal_id">Portal ID</string>
+    <string name="field_logo">Liste logosu</string>
+
+    <!-- Genel -->
+    <string name="ok">Tamam</string>
+    <string name="cancel">İptal</string>
+    <string name="save">Kaydet</string>
+    <string name="delete">Sil</string>
+    <string name="close">Kapat</string>
+    <string name="retry">Tekrar Dene</string>
+    <string name="loading">Yükleniyor…</string>
+    <string name="error_generic">Bir hata oluştu</string>
+    <string name="error_network">Ağ bağlantısı kurulamadı</string>
+    <string name="error_auth">Kullanıcı adı veya parola hatalı</string>
+    <string name="empty_no_channels">Bu listede kanal bulunamadı</string>
+    <string name="empty_no_results">Sonuç bulunamadı</string>
+    <string name="empty_no_recordings">Henüz kayıt yok</string>
+    <string name="empty_no_catchup">Bu kanal için geçmiş yayın yok</string>
+    <string name="back">Geri</string>
+    <string name="play">Oynat</string>
+    <string name="stop">Durdur</string>
+    <string name="pause">Duraklat</string>
+    <string name="resume">Devam Et</string>
+    <string name="record">Kaydet</string>
+    <string name="add_favorite">Favorilere Ekle</string>
+    <string name="remove_favorite">Favorilerden Çıkar</string>
+    <string name="add_watchlist">İzleme listesine ekle</string>
+    <string name="remove_watchlist">İzleme listesinden çıkar</string>
+    <string name="favorite_added">Favorilere eklendi</string>
+    <string name="watchlist_added">İzleme listesine eklendi</string>
+
+    <!-- Oynatici -->
+    <string name="player_no_info">Program bilgisi yok</string>
+    <string name="player_live">CANLI</string>
+    <string name="player_timeshift">KAYIT / GEÇİŞ</string>
+    <string name="player_buffering">Açılıyor… %1$d%%</string>
+    <string name="player_error">Oynatılamıyor</string>
+    <string name="player_vlc_fallback">Uyumsuz akış, VLC motoruna geçildi</string>
+    <string name="player_pip">Küçük Pencere</string>
+    <string name="player_fullscreen">Tam Ekran</string>
+    <string name="player_info">Bilgi</string>
+    <string name="player_next_channel">Sonraki Kanal</string>
+    <string name="player_prev_channel">Önceki Kanal</string>
+    <string name="player_audio_track">Ses Parçası</string>
+    <string name="player_subtitle">Altyazı</string>
+    <string name="player_video_quality">Görüntü Kalitesi</string>
+    <string name="player_timeshift_start">Başlangıç</string>
+    <string name="player_timeshift_end">Bitiş</string>
+    <string name="player_zoom">Yakınlaştır</string>
+    <string name="player_aspect_ratio">En Boy Oranı</string>
+
+    <!-- EPG -->
+    <string name="epg_now">Şimdi</string>
+    <string name="epg_no_epg">EPG verisi yok</string>
+    <string name="epg_days_back">%1$d gün önce</string>
+    <string name="epg_loading_epg">EPG yükleniyor…</string>
+
+    <!-- Arama -->
+    <string name="search_hint">Kanal veya program arayın</string>
+    <string name="search_results_channels">Kanallar</string>
+    <string name="search_results_programs">Programlar</string>
+    <string name="search_suggestions">Öneriler</string>
+    <string name="search_clear">Temizle</string>
+
+    <!-- Catch-up -->
+    <string name="catchup_start">Buradan İzle</string>
+    <string name="catchup_days">%1$d gün geriye git</string>
+    <string name="catchup_unavailable">Catch-up desteklenmiyor</string>
+
+    <!-- DVR / Kayitlar -->
+    <string name="recording_start">Kaydı Başlat</string>
+    <string name="recording_stop">Kaydı Durdur</string>
+    <string name="recording_in_progress">Kayıt sürüyor…</string>
+    <string name="recording_scheduled">Zamanlanmış kayıt</string>
+    <string name="recording_size">%1$s</string>
+    <string name="recording_duration">%1$s</string>
+    <string name="recording_delete_confirm">“%1$s” kaydı silinsin mi?</string>
+    <string name="recording_no_space">Yeterli depolama alanı yok</string>
+    <string name="recording_provider_only">Bu kanal yalnızca sağlayıcı üzerinden kaydedilebilir</string>
+    <string name="recording_drm_protected">Korumalı yayın kaydedilemez</string>
+
+    <!-- Multiview -->
+    <string name="multiview_add">Kanal Ekle</string>
+    <string name="multiview_search">Ara</string>
+    <string name="multiview_swap">Değiştir</string>
+    <string name="multiview_maximize">Büyüt</string>
+    <string name="multiview_fullscreen">Tam Ekran</string>
+    <string name="multiview_remove">Kaldır</string>
+    <string name="multiview_limit">Bu cihaz en fazla %1$d eşzamanlı akış destekler</string>
+    <string name="multiview_4k_warning">4K yayınlarda çoklu akış donanım sınırına takılır</string>
+
+    <!-- Ayarlar -->
+    <string name="settings_playlists">Playlist\'ler</string>
+    <string name="settings_appearance">Görünüm</string>
+    <string name="settings_epg">EPG</string>
+    <string name="settings_player">Oynatıcı</string>
+    <string name="settings_recording">Kayıt</string>
+    <string name="settings_parental">Ebeveyn</string>
+    <string name="settings_backup">Yedekleme</string>
+    <string name="settings_about">Hakkında</string>
+
+    <string name="settings_accent">Vurgu rengi</string>
+    <string name="settings_density">Arayüz yoğunluğu</string>
+    <string name="settings_font_size">Yazı boyutu</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_show_channel_numbers">Kanal numaralarını göster</string>
+    <string name="settings_show_program_progress">Program çubuğunu göster</string>
+    <string name="settings_epg_days">EPG gün sayısı</string>
+    <string name="settings_epg_update">EPG\'yi şimdi güncelle</string>
+    <string name="settings_default_player">Varsayılan motor</string>
+    <string name="settings_buffer_size"> tampon boyutu</string>
+    <string name="settings_hw_decoder">Donanım çözücüyü kullan</string>
+    <string name="settings_timeshift">Timeshift (kaydırmalı canlı)</string>
+    <string name="settings_recording_path">Kayıt klasörü</string>
+    <string name="settings_recording_quality">Kayıt kalitesi</string>
+    <string name="settings_parental_pin">Ebeveyn PIN\'i</string>
+    <string name="settings_parental_locked">Kilitli kanallar</string>
+    <string name="settings_backup_export">Yedek al</string>
+    <string name="settings_backup_import">Yedekten geri yükle</string>
+    <string name="settings_backup_success">Yedekleme tamamlandı</string>
+    <string name="settings_backup_failed">Yedekleme başarısız</string>
+    <string name="settings_about_version">Sürüm %1$s</string>
+    <string name="settings_about_decoder">Uyumlu çözücüler</string>
+
+    <string name="theme_dark">Koyu</string>
+    <string name="theme_light">Açık</string>
+    <string name="density_compact">Sıkışık</string>
+    <string name="density_normal">Normal</string>
+    <string name="density_comfortable">Ferah</string>
+    <string name="font_small">Küçük</string>
+    <string name="font_normal">Normal</string>
+    <string name="font_large">Büyük</string>
+
+    <!-- PIN -->
+    <string name="pin_title">Ebeveyn Kilidi</string>
+    <string name="pin_enter">PIN kodunu girin</string>
+    <string name="pin_wrong">Hatalı PIN</string>
+    <string name="pin_channel_locked">Bu kanal kilitli</string>
+
+    <!-- Kanal -->
+    <string name="channel_locked">Kilitli</string>
+    <string name="channel_hd">HD</string>
+    <string name="channel_4k">4K</string>
+    <string name="channel_stereo">STEREO</string>
+    <string name="channel_favorite">Favori</string>
+    <string name="channel_all">Tümü</string>
+    <string name="channel_groups">Gruplar</string>
+
+    <!-- Bildirim -->
+    <string name="notif_channel">%1$s oynatılıyor</string>
+    <string name="notif_recording">Kaydediliyor: %1$s</string>
+    <string name="notification_channel_name">Oynatma</string>
+    <string name="notification_recording_name">Kayıt</string>
+</resources>
