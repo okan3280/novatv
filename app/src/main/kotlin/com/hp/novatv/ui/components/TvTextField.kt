@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
@@ -65,12 +66,8 @@ fun TvTextField(
 
     // Harici deger degisince (orn. duzenleme ekrani) alani guncelle
     LaunchedEffect(value) {
-        val current = state.text.toString()
-        if (current != value) {
-            state.edit {
-                setSelection(androidx.compose.ui.text.TextRange(0, value.length))
-                replace(value)
-            }
+        if (state.text.toString() != value) {
+            state.setTextAndPlaceCursorAtEnd(value)
         }
     }
 

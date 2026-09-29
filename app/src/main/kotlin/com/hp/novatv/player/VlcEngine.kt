@@ -55,24 +55,18 @@ class VlcEngine(
     /**
      * Video yuzeyini baglar.
      *
-     * AWindow#setSurface private; public olan
-     * AWindow#setVideoView(SurfaceView) kullanilir.
-     */
-    /**
-     * Video yuzeyini baglar.
+     * Dogrulanmis API (libvlc-all 3.7.6):
+     *   MediaPlayer.getVLCVout() : IVLCVout
+     *   IVLCVout.setVideoSurface(Surface, SurfaceHolder)
      *
-     * AWindow#setSurface private; public olan
-     * AWindow#setVideoView(SurfaceView) kullanilir.
+     * `MediaPlayer.vout` alani Kotlin tarafindan cozumlenmiyor;
+     * AWindow#setSurface ise private. Bu yuzden getVLCVout() kullanilir.
      */
     private fun bindSurface(holder: SurfaceHolder?) {
         val player = mediaPlayer ?: return
-        val view = surfaceView ?: return
-        if (holder == null) {
-            runCatching { player.setVideoView(null) }
-            return
-        }
-        runCatching { player.setVideoView(view) }
-            .onFailure { Log.w(TAG, "yuzey baglanamadi", it) }
+        runCatching {
+            player.vlcVout?.setVideoSurface(holder?.surface, holder)
+        }.onFailure { Log.w(TAG, "yuzey baglanamadi", it) }
     }
 
     fun attach(view: SurfaceView) {
