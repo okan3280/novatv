@@ -55,21 +55,24 @@ class VlcEngine(
     /**
      * Video yuzeyini baglar.
      *
-     * MediaPlayer, AWindow API'sini miras alir:
-     *   setSurface(int id, Surface, SurfaceHolder)
-     * ID_VIDEO = 0, ID_SUBTITLES = 1 (IVLCVout sabitleri).
-     * IVLCVout yolu da var, ancak MediaPlayer.vout alani Kotlin
-     * tarafindan cozumlenemiyor.
+     * AWindow#setSurface private; public olan
+     * AWindow#setVideoView(SurfaceView) kullanilir.
+     */
+    /**
+     * Video yuzeyini baglar.
+     *
+     * AWindow#setSurface private; public olan
+     * AWindow#setVideoView(SurfaceView) kullanilir.
      */
     private fun bindSurface(holder: SurfaceHolder?) {
         val player = mediaPlayer ?: return
-        // AWindow#setSurface(int, Surface, SurfaceHolder)
-        // id: ID_VIDEO = 0, ID_SUBTITLES = 1
-        runCatching {
-            if (player is org.videolan.libvlc.AWindow) {
-                player.setSurface(0, holder?.surface, holder)
-            }
-        }.onFailure { Log.w(TAG, "yuzey baglanamadi", it) }
+        val view = surfaceView ?: return
+        if (holder == null) {
+            runCatching { player.setVideoView(null) }
+            return
+        }
+        runCatching { player.setVideoView(view) }
+            .onFailure { Log.w(TAG, "yuzey baglanamadi", it) }
     }
 
     fun attach(view: SurfaceView) {

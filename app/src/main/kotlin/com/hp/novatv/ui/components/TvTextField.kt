@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.TextFieldValue
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,6 +60,7 @@ fun TvTextField(
     // State tabanli BasicTextField
     val state = rememberTextFieldState(
         initialText = value,
+        initialSelection = androidx.compose.ui.text.TextRange(0, value.length),
     )
 
     // Harici deger degisince (orn. duzenleme ekrani) alani guncelle
@@ -68,10 +68,8 @@ fun TvTextField(
         val current = state.text.toString()
         if (current != value) {
             state.edit {
-                setTextAndSelection(
-                    androidx.compose.ui.text.TextRange(0, value.length),
-                    value,
-                )
+                setSelection(androidx.compose.ui.text.TextRange(0, value.length))
+                replace(value)
             }
         }
     }
